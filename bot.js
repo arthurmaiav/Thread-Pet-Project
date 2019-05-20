@@ -1,8 +1,8 @@
 console.log('The bot is starting');
 var Twit = require('twit');
 var config = require('./config');
-const fs = require('fs'); // part of Node, no npm install needed  
-const path = require('path'); // part of Node, no npm install needed
+const fs = require('fs');  
+const path = require('path');
 var T = new Twit(config);
 var ids = [];
 
@@ -52,7 +52,9 @@ function postTweet(txt){
 
 function getTweet(){
 	var getParams = {
-		q: '#createpet', 
+		q: '#adoptpet',
+		q2: 'name',
+		q3: 'specie',
 		count: 3
 	}
 
@@ -61,17 +63,21 @@ function getTweet(){
 	function gotData(err, data, response) {
 		var tweets = data.statuses;
 		for (var i = 0; i < tweets.length ; i++) {
-
-			//Aponta pro post que deve ser monitorado
-			if(tweets[i].in_reply_to_status_id_str == "1126562665994825729") {
+			//Aponta pro tweet que deve ser monitorado
+			if(tweets[i].in_reply_to_status_id_str == "1130522891634847745") {
 				//Coloca tweet em Lower Case
-				var tweetL = tweets[i].text.toLowerCase();
-				//Tweet possui a hashtag
-				if(tweetL.includes(getParams.q)) {
+				var tweetLowerCase = tweets[i].text.toLowerCase();
+				//Tweet possui parametros?
+				if(tweetLowerCase.includes(getParams.q, getParams.q2, getParams.q3)) {
 					//Usuario esta no array?
 					if(checkUser(tweets[i].user.id_str)) {
+						var splittedTweet = tweets[i].text.split('"');
+						var petName = splittedTweet[1];
+						var petSpecie = splittedTweet[3];
 						//Template do tweet do pet
-						var tweet = "Salve @" + tweets[i].user.screen_name + " ta ai teu cusco";
+						var tweet = "Name: " + petName + "\n" +
+									"Specie: " + petSpecie + "\n" +
+									"Owner: @" + tweets[i].user.screen_name;
 						postTweet(tweet);					
 					}
 				}	
