@@ -55,7 +55,7 @@ function getTweet(){
 		q: '#adoptpet',
 		q2: 'name',
 		q3: 'specie',
-		count: 3
+		count: 1
 	}
 
 	T.get('search/tweets', getParams, gotData);
